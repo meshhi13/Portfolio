@@ -1,299 +1,191 @@
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, Mail, ExternalLink, Briefcase, Code, Map, GraduationCap } from 'lucide-react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import ForceGraph2D from 'react-force-graph-2d';
-import './index.css';
+import React, { useState } from 'react';
 
-const rawGraphData = {
-  id: "Root",
-  name: "Core Competencies",
-  val: 6,
-  color: "#0f172a",
-  children: [
-    {
-      id: "Languages",
-      name: "Languages (Click me)",
-      val: 5,
-      color: "#3b82f6",
-      children: [
-        { id: "Python", name: "Python", val: 3, color: "#64748b" },
-        { id: "CPP", name: "C++", val: 3, color: "#64748b" },
-        { id: "Java", name: "Java", val: 3, color: "#64748b" },
-        { id: "TS", name: "TypeScript / JS", val: 3, color: "#64748b" },
-        { id: "SQL", name: "SQL", val: 3, color: "#64748b" }
-      ]
-    },
-    {
-      id: "AIML",
-      name: "AI & Machine Learning",
-      val: 5,
-      color: "#10b981",
-      children: [
-        { id: "RAG", name: "RAG", val: 4, color: "#059669", children: [
-            { id: "LangChain", name: "LangChain", val: 3, color: "#64748b" },
-            { id: "VectorDB", name: "VectorDB (Pinecone, Supabase)", val: 3, color: "#64748b" }
-        ]},
-        { id: "ML", name: "Machine Learning Concepts", val: 4, color: "#059669", children: [
-            { id: "TF", name: "TensorFlow", val: 3, color: "#64748b" },
-            { id: "PT", name: "PyTorch", val: 3, color: "#64748b" },
-            { id: "SKL", name: "Scikit-Learn", val: 3, color: "#64748b" }
-        ]}
-      ]
-    },
-    {
-      id: "Robotics",
-      name: "Robotics & Autonomy",
-      val: 5,
-      color: "#f59e0b",
-      children: [
-        { id: "ROS2", name: "ROS2", val: 3, color: "#64748b" },
-        { id: "Sensors", name: "Sensor Fusion (LiDAR, IMU)", val: 3, color: "#64748b" },
-        { id: "PathPlanning", name: "Nav2 Path Planning", val: 3, color: "#64748b" },
-        { id: "Foxglove", name: "Foxglove / Visualization", val: 3, color: "#64748b" }
-      ]
-    },
-    {
-      id: "Web Infrastructure",
-      name: "Web & Infrastructure",
-      val: 5,
-      color: "#8b5cf6",
-      children: [
-        { id: "Frontend", name: "Frontend", val: 4, color: "#7c3aed", children: [
-            { id: "React", name: "React.js / Next.js", val: 3, color: "#64748b" }
-        ]},
-        { id: "Backend", name: "Backend APIs", val: 4, color: "#7c3aed", children: [
-            { id: "Node", name: "Node.js", val: 3, color: "#64748b" },
-            { id: "FastAPI", name: "FastAPI", val: 3, color: "#64748b" }
-        ]},
-        { id: "DevOps", name: "Cloud & Containerization", val: 4, color: "#7c3aed", children: [
-            { id: "AWS", name: "AWS", val: 3, color: "#64748b" },
-            { id: "Docker", name: "Docker", val: 3, color: "#64748b" },
-            { id: "K8s", name: "Kubernetes Context", val: 3, color: "#64748b" }
-        ]}
-      ]
-    }
-  ]
-};
+const MathPhysicsAnimation = () => (
+  <div style={{ width: '130px', height: '130px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+      <style>
+        {`
+          .accretion-disk { animation: spin 15s linear infinite; transform-origin: 50% 50%; }
+          .accretion-disk-fast { animation: spin 7s linear infinite reverse; transform-origin: 50% 50%; }
+          .photon-ring { animation: pulse 2s ease-in-out infinite; transform-origin: 50% 50%; filter: drop-shadow(0px 0px 4px var(--primary)); }
+          @keyframes spin { 100% { transform: rotate(360deg); } }
+          @keyframes pulse { 50% { stroke-width: 1.5; opacity: 0.8; } }
+        `}
+      </style>
 
-const SkillKnowledgeGraph = () => {
-  const [expandedNodes, setExpandedNodes] = useState(new Set(["Root", "Languages"]));
-  const containerRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  const graphRef = useRef();
+      {/* Gravitational Lensing / Outer field */}
+      <circle cx="50" cy="50" r="48" fill="none" stroke="var(--border)" strokeWidth="0.2" />
+      <circle cx="50" cy="50" r="38" fill="none" stroke="var(--border)" strokeWidth="0.3" strokeDasharray="2 6" />
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        setDimensions({
-          width: containerRef.current.clientWidth,
-          height: 600
-        });
-      }
-    };
-    window.addEventListener('resize', updateDimensions);
-    // slight delay for layout calc
-    setTimeout(updateDimensions, 0); 
-    return () => window.removeEventListener('resize', updateDimensions);
-  }, []);
+      {/* Outer Accretion Disk - Complex overlapping rotating ellipses */}
+      <g className="accretion-disk">
+        {[...Array(18)].map((_, i) => (
+          <ellipse
+            key={`disk1-${i}`}
+            cx="50" cy="50" rx="46" ry="14"
+            fill="none" stroke="var(--secondary)" strokeWidth="0.4"
+            transform={`rotate(${i * 10} 50 50)`}
+          />
+        ))}
+      </g>
 
-  const { nodes, links } = useMemo(() => {
-    const visibleNodes = [];
-    const visibleLinks = [];
+      {/* Inner Accretion Disk - Hotter/Faster */}
+      <g className="accretion-disk-fast">
+        {[...Array(12)].map((_, i) => (
+          <ellipse
+            key={`disk2-${i}`}
+            cx="50" cy="50" rx="30" ry="8"
+            fill="none" stroke="var(--primary)" strokeWidth="0.6"
+            transform={`rotate(${i * 15} 50 50)`}
+          />
+        ))}
+      </g>
 
-    const traverse = (node) => {
-      visibleNodes.push({ 
-        id: node.id, 
-        name: node.name, 
-        val: node.val, 
-        color: node.color 
-      });
+      {/* Shooting Stars Infall */}
+      <g transform="translate(50, 50)">
+        {[...Array(24)].map((_, i) => (
+          <circle
+            key={`star-${i}`}
+            r="0.8"
+            fill="var(--primary)"
+          >
+            <animateTransform
+              attributeName="transform"
+              type="translate"
+              from={`${Math.cos(i * 15 * Math.PI / 180) * 48} ${Math.sin(i * 15 * Math.PI / 180) * 48}`}
+              to="0 0"
+              dur={`${1.5 + Math.random() * 2}s`}
+              repeatCount="indefinite"
+            />
+            <animate attributeName="opacity" values="0;1;0" dur={`${1.5 + Math.random() * 2}s`} repeatCount="indefinite" />
+          </circle>
+        ))}
+      </g>
 
-      if (expandedNodes.has(node.id) && node.children) {
-        node.children.forEach(child => {
-          visibleLinks.push({ source: node.id, target: child.id });
-          traverse(child);
-        });
-      }
-    };
+      {/* The Photon Sphere / Event Horizon (Pure Black Hole masking everything behind it) */}
+      <circle cx="50" cy="50" r="14" fill="var(--bg)" stroke="var(--primary)" strokeWidth="1" className="photon-ring" />
+      <circle cx="50" cy="50" r="13.5" fill="var(--bg)" />
+    </svg>
+  </div>
+);
 
-    traverse(rawGraphData);
-    return { nodes: visibleNodes, links: visibleLinks };
-  }, [expandedNodes]);
+const nodeTree = [
+  {
+    id: "ML",
+    name: "Machine Learning & AI",
+    children: [
+      { name: "Generative AI", items: ["LangChain", "RAG Systems", "Prompt Engineering"] },
+      { name: "Deep Learning", items: ["TensorFlow", "PyTorch", "OpenCV", "Machine Learning"] },
+      { name: "Core ML Data", items: ["Python", "Scikit-learn", "Pandas", "NumPy", "Matplotlib", "Data Visualization"] }
+    ]
+  },
+  {
+    id: "Web",
+    name: "Web Development",
+    children: [
+      { name: "Frontend", items: ["React.js", "JavaScript", "TypeScript", "Dart", "HTML", "CSS"] },
+      { name: "Backend", items: ["Node.js", "FastAPI", "Flask", "Django", "REST/GraphQL APIs"] },
+      { name: "Databases", items: ["SQL", "PostgreSQL", "Supabase", "MySQL", "MongoDB", "SQLite", "Firebase"] }
+    ]
+  },
+  {
+    id: "Systems",
+    name: "Systems & Robotics",
+    children: [
+      { name: "Languages", items: ["C/C++", "Java", "x86-64 Assembly", "OOP"] },
+      { name: "Robotics", items: ["ROS2", "Foxglove"] },
+      { name: "AppSec", items: ["lldb/gdb", "Ghidra"] }
+    ]
+  },
+  {
+    id: "DevOps",
+    name: "DevOps & Workflow",
+    children: [
+      { name: "Cloud & CI/CD", items: ["AWS", "Docker", "CI/CD", "Cloud Computing"] },
+      { name: "VCS", items: ["Git", "GitHub", "BitBucket", "Agile/Scrum"] },
+      { name: "Environment", items: ["SSH", "Vim", "tmux", "grep"] }
+    ]
+  }
+];
 
-  const handleNodeClick = useCallback(node => {
-    // Determine if it actually has children we can expand
-    const hasChildren = (searchNode, targetId) => {
-      if (searchNode.id === targetId) return !!searchNode.children;
-      if (searchNode.children) {
-        return searchNode.children.some(child => hasChildren(child, targetId));
-      }
-      return false;
-    };
+const Skills = () => {
+  const [expanded, setExpanded] = useState(new Set());
 
-    if (hasChildren(rawGraphData, node.id)) {
-      setExpandedNodes(prev => {
-        const next = new Set(prev);
-        if (next.has(node.id)) {
-          next.delete(node.id);
-        } else {
-          next.add(node.id);
-        }
-        return next;
-      });
-    }
-
-    // Center node on click
-    if (graphRef.current) {
-      graphRef.current.centerAt(node.x, node.y, 1000);
-      graphRef.current.zoom(1.5, 1000);
-    }
-  }, []);
-
-  const drawNode = useCallback((node, ctx, globalScale) => {
-    const label = node.name;
-    const fontSize = 14 / globalScale;
-    ctx.font = `${fontSize}px Inter, sans-serif`;
-    
-    // Draw the circle representation
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, node.val * 2, 0, 2 * Math.PI, false);
-    ctx.fillStyle = node.color;
-    ctx.fill();
-
-    // Prepare text box drawing
-    const textWidth = ctx.measureText(label).width;
-    const bDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.4);
-
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-    ctx.fillRect(
-      node.x - bDimensions[0] / 2, 
-      node.y + node.val * 2 + 1, 
-      bDimensions[0], 
-      bDimensions[1]
-    );
-
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#1e293b'; 
-    ctx.fillText(label, node.x, node.y + node.val * 2 + 1 + bDimensions[1] / 2);
-  }, []);
+  const toggle = (id) => {
+    setExpanded(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   return (
-    <section>
-      <div style={{ marginBottom: '20px' }}>
-        <h2><Map size={24} style={{ marginRight: '10px' }} /> Knowledge Graph</h2>
-        <p style={{ color: '#64748b' }}>
-          An expansive representation of my technical skills. Click on a central competency node to expand it and reveal its specific sub-skills.
-        </p>
+    <section className="content-section">
+      <div className="section-header" style={{ alignItems: 'flex-end', borderBottom: '1px solid var(--border)', paddingBottom: '10px', marginBottom: '20px' }}>
+        <h2 style={{ margin: 0, border: 'none', padding: 0 }}>Skills</h2>
       </div>
 
-      <div 
-        ref={containerRef} 
-        style={{ 
-          width: '100%', 
-          height: '600px', 
-          background: '#f8fafc',
-          borderRadius: '16px',
-          border: '1px solid #e2e8f0',
-          overflow: 'hidden',
-          boxShadow: 'inset 0 0 20px rgba(0,0,0,0.02)'
-        }}
-      >
-        <ForceGraph2D
-          ref={graphRef}
-          width={dimensions.width}
-          height={dimensions.height}
-          graphData={{ nodes, links }}
-          nodeCanvasObject={drawNode}
-          onNodeClick={handleNodeClick}
-          dagMode="radialout"
-          dagLevelDistance={80}
-          linkHoverPrecision={10}
-          linkColor={() => '#cbd5e1'}
-          linkWidth={1.5}
-          linkDirectionalParticles={2}
-          linkDirectionalParticleWidth={1.5}
-          linkDirectionalParticleColor={() => '#94a3b8'}
-          warmupTicks={100}
-          cooldownTicks={0}
-        />
+      <div className="tree-container">
+        {nodeTree.map(cat => (
+          <div key={cat.id} className="tree-column" onClick={() => { if (!expanded.has(cat.id)) toggle(cat.id) }}>
+            <div className="tree-heading" onClick={() => { if (expanded.has(cat.id)) toggle(cat.id) }}>
+              <span>{cat.name}</span>
+              <span>{expanded.has(cat.id) ? '-' : '+'}</span>
+            </div>
+            {expanded.has(cat.id) && (
+              <div style={{ marginTop: '10px' }}>
+                {cat.children.map((sub, i) => (
+                  <div key={i} style={{ marginBottom: '10px' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--primary)', marginBottom: '4px' }}>{sub.name}</div>
+                    <div>
+                      {sub.items.map((item, j) => (
+                        <span key={j} className="skill-pill">{item}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </section>
   );
 };
 
-const MinimalStack = ({ title, items, icon }) => {
+const MinimalStack = ({ title, items }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [frontIndex, setFrontIndex] = useState(0);
-
-  // When expanded, show in original order. When collapsed, show cycled order.
-  const displayItems = isExpanded 
-    ? items 
-    : [...items.slice(frontIndex), ...items.slice(0, frontIndex)];
+  const displayItems = isExpanded ? items : items.slice(0, 1);
 
   return (
-    <section style={{ margin: '60px 0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-        <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {icon} {title}
-        </h2>
-        <button
-          className="btn-toggle"
-          onClick={() => setIsExpanded(!isExpanded)}
-          style={{ background: isExpanded ? '#334155' : '#0f172a' }}
-        >
-          {isExpanded ? (
-            <><ChevronUp size={18} /> Minimal View</>
-          ) : (
-            <><ChevronDown size={18} /> Expand Stack</>
-          )}
-        </button>
+    <section className="content-section">
+      <div className="section-header">
+        <h2 style={{ margin: 0, border: 'none', padding: 0 }}>{title}</h2>
+        {items.length > 1 && (
+          <button className="btn-toggle" onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? 'Collapse' : 'Expand'}
+          </button>
+        )}
       </div>
+      <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '10px', marginBottom: '20px' }}></div>
 
-      <div style={{ position: 'relative', minHeight: isExpanded ? 'auto' : '200px' }}>
+      <div>
         {displayItems.map((item, i) => (
-          <motion.div
-            key={item.title}
-            layout
-            onClick={() => {
-              if (!isExpanded) {
-                setFrontIndex((prev) => (prev + 1) % items.length);
-              }
-            }}
-            className="stack-card"
-            animate={{
-              y: isExpanded ? 0 : i * 15,
-              scale: isExpanded ? 1 : 1 - i * 0.05,
-              opacity: isExpanded ? 1 : 1 - i * 0.2,
-              zIndex: displayItems.length - i
-            }}
-            style={{
-              position: isExpanded ? 'relative' : 'absolute',
-              width: '100%',
-              top: 0,
-              background: '#ffffff',
-              marginBottom: isExpanded ? '20px' : '0',
-              cursor: isExpanded ? 'default' : 'pointer'
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+          <div key={i} className="stack-card">
+            <div className="card-top">
               <div>
-                <span style={{ fontWeight: 700, fontSize: '1.2rem', color: '#0f172a' }}>{item.title}</span>
-                <div style={{ color: '#3b82f6', fontWeight: 600, fontSize: '0.95rem', marginTop: '4px' }}>
-                  {item.subtitle}
-                </div>
+                <div className="card-title">{item.title}</div>
+                <div className="card-subtitle">{item.subtitle}</div>
               </div>
-              <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 500 }}>{item.date}</span>
+              {item.date && <div className="card-date">{item.date}</div>}
             </div>
             <div className="card-content">
-              <ul style={{ listStyleType: 'disc', paddingLeft: '20px', color: '#475569' }}>
-                {item.bullets.map((b, idx) => (
-                  <li key={idx} style={{ marginBottom: '8px', lineHeight: '1.5' }}>{b}</li>
-                ))}
+              <ul>
+                {item.bullets.map((b, idx) => <li key={idx}>{b}</li>)}
               </ul>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>
@@ -304,12 +196,20 @@ const Portfolio = () => {
   const education = [
     {
       title: "University of Virginia",
-      subtitle: "B.S. in Computer Science & Mathematics",
-      date: "Expected May 2027",
+      subtitle: "Computer Science and Mathematics | GPA: 3.82 / 4.00",
+      date: "Aug 2025 – May 2028",
       bullets: [
-        "GPA: 3.95/4.00",
-        "Awards: Ingrassia Family Research Grant",
-        "Relevant Coursework: Data Structures, Algorithms, Machine Learning, Artificial Intelligence, Systems Programming."
+        "Echols and College Science Scholar, Virginia Poker Club, Climbing Club",
+        "Advanced Data Structures, Computer Architecture, ODEs, Intermediate Macroeconomics"
+      ]
+    },
+    {
+      title: "Chantilly High School",
+      subtitle: "Advanced Diploma | GPA: 4.59 / 4.00",
+      date: "Aug 2021 - May 2025",
+      bullets: [
+        "Computer Science Honor Society (President), FIRST Technology Challenge (Captain), VSSEF",
+        "Multivariable Calculus, Linear Algebra, Statistics, OOP, Discrete Mathematics"
       ]
     }
   ];
@@ -358,9 +258,51 @@ const Portfolio = () => {
 
   const projects = [
     {
+      title: "A8THER - Autonomous AI RE Agent",
+      subtitle: "Python • FastAPI • Ghidra • Docker",
+      bullets: [
+        "Built a sandboxed autonomous agent utilizing a ReAct orchestration loop to decompile binary executables and recover source code.",
+        "Integrated headless Ghidra structural analysis with an isolated Docker environment for safe payload translation.",
+        "Developed and presented at HooHacks 2026."
+      ]
+    },
+    {
+      title: "EcoAlert - Environmental Risk Management",
+      subtitle: "Python • Flask • Leaflet • OpenAI API",
+      bullets: [
+        "Engineered a full-stack web app processing real-time weather data to deliver predictive climate risk analytics for 500+ map locations.",
+        "Implemented interactive mapping via Leaflet.js and integrated OpenAI for intelligent risk assessment.",
+        "Won 1st place among 200+ participants at HackTheNest 2025."
+      ]
+    },
+    {
+      title: "EyeDragon - Medical AI Diagnosis System",
+      subtitle: "Python • TensorFlow • YoloV8 • Pandas",
+      bullets: [
+        "Developed a machine-learning classification model aimed at diagnosing retinal fundus diseases.",
+        "Trained on over 20,000 fundus images, achieving an overall accuracy of 92.3% for 6 unique retinopathies.",
+        "Won 2nd place in Biomedical Sciences at the Virginia State Science and Engineering Fair (VSSEF)."
+      ]
+    },
+    {
+      title: "Rubik’s Cube 3D Emulator",
+      subtitle: "Java • JavaFX • OpenJFX",
+      bullets: [
+        "Developed a fully interactive 3D simulator featuring real-time animations, face rotations, and camera controls.",
+        "Implemented core functionality including scrambling, advanced rotations, and view zoom/reset."
+      ]
+    },
+    {
+      title: "AI Minesweeper Clone",
+      subtitle: "Python • Pygame",
+      bullets: [
+        "Built an interactive clone featuring dynamic board sizing and customizable mine density.",
+        "Engineered a recursive solver that successfully auto-completes the board."
+      ]
+    },
+    {
       title: "CorporateHistory RAG Engine",
       subtitle: "LangChain • Supabase • Next.js",
-      date: "2025",
       bullets: [
         "Semantic search engine processing 10,000+ unstructured records.",
         "Enabled sub-second retrieval for complex corporate history queries."
@@ -369,79 +311,56 @@ const Portfolio = () => {
     {
       title: "Energy Analytics Dashboard",
       subtitle: "Python • Streamlit • scikit-learn",
-      date: "2024",
       bullets: [
         "Real-time anomaly detection on 200,000+ energy data points.",
         "Visualized consumption trends via interactive clusters."
-      ]
-    },
-    {
-      title: "Autonomous Robotics System",
-      subtitle: "FIRST Tech Challenge",
-      date: "2021-2023",
-      bullets: [
-        "PID-tuned autonomous routines for high-precision robotics.",
-        "Integrated sensor fusion (IMU, Encoders) for 95% scoring success."
       ]
     }
   ];
 
   return (
     <div className="app-container">
-      <header className="fade-in" style={{ marginBottom: '60px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header style={{ marginBottom: '60px' }}>
+        <div className="header-layout">
           <div>
-            <h1 style={{ fontSize: '3rem', margin: 0, color: '#0f172a' }}>Himesh Ahuja</h1>
-            <p style={{ fontSize: '1.2rem', color: '#64748b', marginTop: '10px', marginBottom: '25px' }}>
-              Computer Science & Mathematics @ University of Virginia
+            <h1>Himesh Ahuja</h1>
+            <p className="subtitle" style={{ lineHeight: '1.4' }}>
+              :: COMPUTER SCIENCE & MATHEMATICS<br />
+              :: UNIVERSITY OF VIRGINIA
             </p>
-            <div style={{ display: 'flex', gap: '20px' }}>
-              <a href="mailto:himesh.d.ahuja@gmail.com" className="meta-item hover:text-blue-500" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', textDecoration: 'none', fontWeight: 500 }}>
-                <Mail size={18} /> Email
-              </a>
-              <a href="https://linkedin.com/in/himesh-ahuja" target="_blank" rel="noreferrer" className="meta-item hover:text-blue-500" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', textDecoration: 'none', fontWeight: 500 }}>
-                <FaLinkedin size={18} /> LinkedIn
-              </a>
-              <a href="https://github.com/meshhi13" target="_blank" rel="noreferrer" className="meta-item hover:text-blue-500" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', textDecoration: 'none', fontWeight: 500 }}>
-                <FaGithub size={18} /> GitHub
-              </a>
-              <a href="/HimeshAhujaResume.pdf" target="_blank" className="meta-item hover:text-blue-500" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', textDecoration: 'none', fontWeight: 500 }}>
-                <ExternalLink size={18} /> Resume
-              </a>
+            <div className="header-links">
+              <a href="mailto:himesh.d.ahuja@gmail.com" className="meta-item">EMAIL</a>
+              <a href="https://linkedin.com/in/himesh-ahuja" target="_blank" rel="noreferrer" className="meta-item">LINKEDIN</a>
+              <a href="https://github.com/meshhi13" target="_blank" rel="noreferrer" className="meta-item">GITHUB</a>
+              <a href="/HimeshAhujaResume.pdf" target="_blank" className="meta-item">RESUME</a>
             </div>
           </div>
-          <div>
-            <img 
-              src="/profile.png" 
-              alt="Himesh Ahuja" 
-              style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #f8fafc', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} 
-            />
+          <div className="header-avatar">
+            <MathPhysicsAnimation />
           </div>
         </div>
       </header>
 
-      <SkillKnowledgeGraph />
-      
-      <MinimalStack 
-        title="Education" 
-        items={education} 
-        icon={<GraduationCap size={24} color="#f59e0b" />} 
+      <MinimalStack
+        title="Experience"
+        items={experiences}
       />
 
-      <MinimalStack 
-        title="Professional Experience" 
-        items={experiences} 
-        icon={<Briefcase size={24} color="#3b82f6" />} 
+      <MinimalStack
+        title="Education"
+        items={education}
       />
 
-      <MinimalStack 
-        title="Technical Projects" 
-        items={projects} 
-        icon={<Code size={24} color="#10b981" />} 
+      <MinimalStack
+        title="Projects"
+        items={projects}
       />
 
-      <footer style={{ marginTop: '60px', paddingTop: '30px', borderTop: '1px solid #e2e8f0', textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem' }}>
-        &copy; {new Date().getFullYear()} Himesh Ahuja
+      <Skills />
+
+      <footer className="footer-layout">
+        <p>INIT &copy; {new Date().getFullYear()}</p>
+        <p>HIMESH AHUJA</p>
       </footer>
     </div>
   );
