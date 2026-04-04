@@ -405,7 +405,7 @@ const Portfolio = () => {
               <a href="https://github.com/meshhi13" target="_blank" rel="noreferrer" className="meta-item hover:text-blue-500" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', textDecoration: 'none', fontWeight: 500 }}>
                 <FaGithub size={18} /> GitHub
               </a>
-              <a href="/resume.pdf" target="_blank" className="meta-item hover:text-blue-500" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', textDecoration: 'none', fontWeight: 500 }}>
+              <a href="/HimeshAhujaResume.pdf" target="_blank" className="meta-item hover:text-blue-500" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', textDecoration: 'none', fontWeight: 500 }}>
                 <ExternalLink size={18} /> Resume
               </a>
             </div>
