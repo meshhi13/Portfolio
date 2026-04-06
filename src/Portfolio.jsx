@@ -201,7 +201,6 @@ const Portfolio = () => {
       bullets: [
         "Echols and College Science Scholar, Virginia Poker Club, Climbing Club",
         "Advanced Data Structures, Computer Architecture, ODEs, Intermediate Macroeconomics",
-        <a href="/HimeshAhujaTranscript.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>[VIEW TRANSCRIPT]</a>
       ]
     },
     {
