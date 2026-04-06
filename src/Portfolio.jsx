@@ -200,7 +200,8 @@ const Portfolio = () => {
       date: "Aug 2025 – May 2028",
       bullets: [
         "Echols and College Science Scholar, Virginia Poker Club, Climbing Club",
-        "Advanced Data Structures, Computer Architecture, ODEs, Intermediate Macroeconomics"
+        "Advanced Data Structures, Computer Architecture, ODEs, Intermediate Macroeconomics",
+        <a href="/HimeshAhujaTranscript.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>[VIEW TRANSCRIPT]</a>
       ]
     },
     {
@@ -329,10 +330,11 @@ const Portfolio = () => {
               :: UNIVERSITY OF VIRGINIA
             </p>
             <div className="header-links">
-              <a href="mailto:himesh.d.ahuja@gmail.com" className="meta-item">EMAIL</a>
-              <a href="https://linkedin.com/in/himesh-ahuja" target="_blank" rel="noreferrer" className="meta-item">LINKEDIN</a>
-              <a href="https://github.com/meshhi13" target="_blank" rel="noreferrer" className="meta-item">GITHUB</a>
-              <a href="/HimeshAhujaResume.pdf" target="_blank" className="meta-item">RESUME</a>
+              <a href="mailto:himesh.d.ahuja@gmail.com" target="_blank" rel="noopener noreferrer" className="meta-item">EMAIL</a>
+              <a href="https://linkedin.com/in/himesh-ahuja" target="_blank" rel="noopener noreferrer" className="meta-item">LINKEDIN</a>
+              <a href="https://github.com/meshhi13" target="_blank" rel="noopener noreferrer" className="meta-item">GITHUB</a>
+              <a href="/HimeshAhujaResume.pdf" target="_blank" rel="noopener noreferrer" className="meta-item">RESUME</a>
+              <a href="/HimeshAhujaTranscript.pdf" target="_blank" rel="noopener noreferrer" className="meta-item">TRANSCRIPT</a>
             </div>
           </div>
           <div className="header-avatar">
