@@ -57,7 +57,7 @@ const Portfolio = () => {
           ))}
         </nav>
         <p className="fine-print">
-          Available for thoughtful projects, clean interfaces, and tools that stay out of the way.
+          Always looking for the opportunity to learn and grow, reach out with anything.
         </p>
       </section>
     </main>
