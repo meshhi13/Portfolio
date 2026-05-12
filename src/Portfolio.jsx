@@ -41,9 +41,7 @@ const Portfolio = () => {
         <PeaceMark />
         <p className="eyebrow">Hi, I&apos;m Himesh.</p>
         <h1>I'm currently a student at the University of Virginia, where I learn about building scalable software solutions.</h1>
-        <p className="lede">
-          I build small, useful software and like keeping things simple.
-        </p>
+
         <nav className="link-row" aria-label="Primary links">
           {links.map((link, index) => (
             <span className="link-item" key={link.label}>
